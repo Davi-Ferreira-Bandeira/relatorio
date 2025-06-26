@@ -9,38 +9,8 @@ from streamlit_folium import st_folium
 import folium
 
 # ---------- CONFIGURAÇÃO GERAL ----------
-st.set_page_config(page_title="Internações SUS – Ride-DF",
-                   page_icon="🏥",
-                   layout="wide")
 
-# ---------- CONEXÃO COM O BANCO ----------
-@st.cache_resource(show_spinner=False)
-def get_engine():
-    user = "data_iesb"
-    pwd  = "wjDfqcUxfjtYXp04tr0S"
-    host = "rds-prod.cmt2mu288c4s.us-east-1.rds.amazonaws.com"
-    port = 5432
-    db   = "iesb"
-    url  = f"postgresql+psycopg2://{user}:{pwd}@{host}:{port}/{db}"
-    return create_engine(url, pool_pre_ping=True)
-
-@st.cache_data(show_spinner="Carregando dados…")
-def load_data():
-    sql = """
-        SELECT
-            ano_aih, mes_aih, nome_municipio,
-            uf_nome, uf_sigla, latitude, longitude,
-            qtd_total, valor_total
-        FROM public.sus_ride_df_aih
-        WHERE (ano_aih = 2024 OR (ano_aih = 2025 AND mes_aih = 1));
-    """
-    df = pd.read_sql(sql, get_engine())
-    # Mes como int ordenável + label “Jan”, “Fev”…
-    df["mes_num"]  = df["mes_aih"].astype(int)
-    df["mes_label"] = pd.to_datetime(df["mes_num"], format="%m").dt.strftime("%b")
-    return df
-
-df = load_data()
+df = pd.read_csv("")
 
 # ---------- COMPONENTES REUTILIZÁVEIS ----------
 def cards_overview(df_f):
