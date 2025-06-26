@@ -37,20 +37,37 @@ def cards_overview(df_f):
     col2.metric("Custo Total (R$)", f"{df_f['vl_total'].sum():,.0f}".replace(",", ".").replace(".", ","))
 
 def line_charts(df_f):
-    fig_qtd = px.line(df_f.groupby(["ano_aih","mes_label","mes_num"], as_index=False)
-                      .agg(qtd_total=("qtd_total","sum")),
-                      x="mes_num", y="qtd_total", color="ano_aih",
-                      markers=True, title="Evolução Mensal das Internações")
-    fig_qtd.update_xaxes(tickvals=df_f["mes_num"].unique(),
-                         ticktext=df_f.sort_values("mes_num")["mes_label"].unique())
+    # Agrupa e ORDERNA
+    qtd = (
+        df_f.groupby(["ano_aih", "mes_num"], as_index=False)
+            .agg(qtd_total=("qtd_total", "sum"))
+            .sort_values(["ano_aih", "mes_num"])          
+    )
+    fig_qtd = px.line(
+        qtd, x="mes_num", y="qtd_total", color="ano_aih",
+        markers=True, title="Evolução Mensal das Internações"
+    )
+    fig_qtd.update_xaxes(
+        tickvals=qtd["mes_num"].unique(),
+        ticktext=["Jan","Fev","Mar","Abr","Mai","Jun",
+                  "Jul","Ago","Set","Out","Nov","Dez"][:len(qtd["mes_num"].unique())]
+    )
     st.plotly_chart(fig_qtd, use_container_width=True)
 
-    fig_val = px.line(df_f.groupby(["ano_aih","mes_label","mes_num"], as_index=False)
-                      .agg(vl_total=("vl_total","sum")),
-                      x="mes_num", y="vl_total", color="ano_aih",
-                      markers=True, title="Evolução Mensal dos Custos (R$)")
-    fig_val.update_xaxes(tickvals=fig_qtd.layout.xaxis.tickvals,
-                         ticktext=fig_qtd.layout.xaxis.ticktext)
+    # ---- gráfico de valores ----
+    val = (
+        df_f.groupby(["ano_aih", "mes_num"], as_index=False)
+            .agg(valor_total=("valor_total", "sum"))
+            .sort_values(["ano_aih", "mes_num"])
+    )
+    fig_val = px.line(
+        val, x="mes_num", y="valor_total", color="ano_aih",
+        markers=True, title="Evolução Mensal dos Custos (R$)"
+    )
+    fig_val.update_xaxes(
+        tickvals=fig_qtd.layout.xaxis.tickvals,
+        ticktext=fig_qtd.layout.xaxis.ticktext
+    )
     st.plotly_chart(fig_val, use_container_width=True)
 
 def pizza_barras(df_f, medida="qtd_total"):
