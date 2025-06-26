@@ -70,27 +70,49 @@ def line_charts(df_f):
     )
     st.plotly_chart(fig_val, use_container_width=True)
 
+from streamlit_plotly_events import plotly_events
+import plotly.express as px
+import streamlit as st
+
 def pizza_barras(df_f, medida="qtd_total"):
-    # Pizza / Rosca
-    pie = px.pie(df_f, names="uf_nome", values=medida,
-             hole=.4, color="uf_nome",
-             title="Distribuição das Internações por UF")
+    # ---------- Pizza / Rosca ----------
+    pie = px.pie(
+        df_f,
+        names="uf_nome",
+        values=medida,
+        hole=.4,
+        color="uf_nome",
+        title="Distribuição das Internações por UF"
+    )
 
-selected = plotly_events(pie, click_event=True, select_event=False,
-                         use_container_width=True)
+    # Usa streamlit-plotly-events para capturar clique
+    selected = plotly_events(
+        pie,
+        click_event=True,
+        select_event=False,
+        use_container_width=True,
+    )
 
-if selected:                       # usuário clicou em uma fatia
-    uf_click = selected[0]["label"]
-    df_f = df_f[df_f["uf_nome"] == uf_click]
+    # ---------- Filtra DataFrame se houver clique ----------
+    if selected:
+        uf_click = selected[0]["label"]    # UF clicada
+        df_filtrado = df_f[df_f["uf_nome"] == uf_click]
+        titulo_barras = f"Internações por Município ({uf_click})"
+    else:
+        df_filtrado = df_f
+        titulo_barras = "Internações por Município"
 
-# Barras por município (filtradas ou não)
-barras = px.bar(df_f.groupby("nome_municipio", as_index=False)
-                    .agg(valor=(medida, "sum"))
-                    .sort_values("valor", ascending=False),
-                x="valor", y="nome_municipio",
-                orientation="h",
-                title=f"Internações por Município {'('+uf_click+')' if selected else ''}")
-st.plotly_chart(barras, use_container_width=True)
+    # ---------- Barras horizontais ----------
+    barras = px.bar(
+        df_filtrado.groupby("nome_municipio", as_index=False)
+                   .agg(valor=(medida, "sum"))
+                   .sort_values("valor", ascending=False),
+        x="valor",
+        y="nome_municipio",
+        orientation="h",
+        title=titulo_barras,
+    )
+    st.plotly_chart(barras, use_container_width=True)
 
 def mapa(df_f):
     m = folium.Map(location=[-15.8,-47.9], zoom_start=6, tiles="CartoDB positron")
