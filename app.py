@@ -106,6 +106,7 @@ def pizza_barras(df_f, medida="qtd_total"):
         )
         df_filtrado = df_f[df_f["uf_nome"] == uf_click]
         titulo_barras = f"Internações por Município ({uf_click})"
+        st.write(selected)
     else:
         df_filtrado = df_f
         titulo_barras = "Internações por Município"
