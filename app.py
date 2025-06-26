@@ -9,8 +9,26 @@ from streamlit_folium import st_folium
 import folium
 
 # ---------- CONFIGURAÇÃO GERAL ----------
+st.set_page_config(page_title="Internações SUS – Ride-DF",
+                   page_icon="🏥",
+                   layout="wide")
 
-df = pd.read_csv("sus_ride_df_aih_202506261935.csv")
+# ---------- CARREGAMENTO DO CSV ----------
+@st.cache_data(show_spinner="Carregando dados…")
+def load_data():
+    df = (
+        pd.read_csv("sus_ride_df_aih_202506261935.csv")      # ← caminho para o arquivo
+          .rename(columns=str.lower)                         # garante minúsculas
+    )
+
+    # Mes como int ordenável + label “Jan”, “Fev”…
+    df["mes_num"]   = df["mes_aih"].astype(int)
+    df["mes_label"] = pd.to_datetime(df["mes_num"], format="%m").dt.strftime("%b")
+
+    return df
+
+df = load_data()
+
 
 # ---------- COMPONENTES REUTILIZÁVEIS ----------
 def cards_overview(df_f):
