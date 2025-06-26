@@ -57,11 +57,11 @@ def line_charts(df_f):
     # ---- gráfico de valores ----
     val = (
         df_f.groupby(["ano_aih", "mes_num"], as_index=False)
-            .agg(valor_total=("valor_total", "sum"))
+            .agg(vl_total=("vl_total", "sum"))
             .sort_values(["ano_aih", "mes_num"])
     )
     fig_val = px.line(
-        val, x="mes_num", y="valor_total", color="ano_aih",
+        val, x="mes_num", y="vl_total", color="ano_aih",
         markers=True, title="Evolução Mensal dos Custos (R$)"
     )
     fig_val.update_xaxes(
