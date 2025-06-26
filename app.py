@@ -34,7 +34,7 @@ df = load_data()
 def cards_overview(df_f):
     col1, col2 = st.columns(2)
     col1.metric("Total de Internações", f"{df_f['qtd_total'].sum():,}".replace(",", "."))
-    col2.metric("Custo Total (R$)", f"{df_f['valor_total'].sum():,.0f}".replace(",", ".").replace(".", ","))
+    col2.metric("Custo Total (R$)", f"{df_f['vl_total'].sum():,.0f}".replace(",", ".").replace(".", ","))
 
 def line_charts(df_f):
     fig_qtd = px.line(df_f.groupby(["ano_aih","mes_label","mes_num"], as_index=False)
@@ -46,8 +46,8 @@ def line_charts(df_f):
     st.plotly_chart(fig_qtd, use_container_width=True)
 
     fig_val = px.line(df_f.groupby(["ano_aih","mes_label","mes_num"], as_index=False)
-                      .agg(valor_total=("valor_total","sum")),
-                      x="mes_num", y="valor_total", color="ano_aih",
+                      .agg(vl_total=("vl_total","sum")),
+                      x="mes_num", y="vl_total", color="ano_aih",
                       markers=True, title="Evolução Mensal dos Custos (R$)")
     fig_val.update_xaxes(tickvals=fig_qtd.layout.xaxis.tickvals,
                          ticktext=fig_qtd.layout.xaxis.ticktext)
