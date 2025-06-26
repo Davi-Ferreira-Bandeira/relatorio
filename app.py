@@ -4,7 +4,6 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from sqlalchemy import create_engine
 from streamlit_folium import st_folium
 import folium
 
@@ -75,12 +74,7 @@ def pizza_barras(df_f, medida="qtd_total"):
     pie = px.pie(df_f, names="uf_nome", values=medida,
                  hole=.4, color="uf_nome",
                  title="Distribuição das Internações por UF")
-    sel = st.plotly_chart(pie, use_container_width=True)
-    # Capturar UF clicada
-    click = pie.select_data()
-    if click and len(click["points"])>0:
-        uf_click = click["points"][0]["label"]
-        df_f = df_f[df_f["uf_nome"] == uf_click]
+    st.plotly_chart(pie, use_container_width=True)
 
     # Barras horizontal por município
     barras = px.bar(df_f.groupby("nome_municipio", as_index=False)
