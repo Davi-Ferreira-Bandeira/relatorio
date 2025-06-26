@@ -81,29 +81,31 @@ def pizza_barras(df_f, medida="qtd_total"):
         names="uf_nome",
         values=medida,
         hole=.4,
-        color="uf_nome",
-        title="Distribuição das Internações por UF"
+        title="Distribuição das Internações por UF",
+        color_discrete_sequence=px.colors.qualitative.Set3  # cores diferentes
     )
+    # garante que a UF esteja disponível nos dados do ponto
+    pie.update_traces(customdata=df_f["uf_nome"])
 
-    # Usa streamlit-plotly-events para capturar clique
+    # ---------- Captura de clique ----------
     selected = plotly_events(
         pie,
         click_event=True,
         select_event=False,
-        override_width="100%"    
+        override_width="100%",
+        key="pie-ufs"         # 👈 chave única e fixa!
     )
 
     # ---------- Filtra se houve clique ----------
     if selected:
-        point = selected[0]
-        uf_click = point.get("label") or point.get("customdata") \
-                   or point.get("x")   or point.get("y")
-        if uf_click:
-            df_filtrado = df_f[df_f["uf_nome"] == uf_click]
-            titulo_barras = f"Internações por Município ({uf_click})"
-        else:
-            df_filtrado = df_f
-            titulo_barras = "Internações por Município"
+        uf_click = (
+            selected[0].get("label")
+            or selected[0].get("customdata")
+            or selected[0].get("x")
+            or selected[0].get("y")
+        )
+        df_filtrado = df_f[df_f["uf_nome"] == uf_click]
+        titulo_barras = f"Internações por Município ({uf_click})"
     else:
         df_filtrado = df_f
         titulo_barras = "Internações por Município"
@@ -117,6 +119,7 @@ def pizza_barras(df_f, medida="qtd_total"):
         y="nome_municipio",
         orientation="h",
         title=titulo_barras,
+        color_discrete_sequence=["#005DAA"]
     )
     st.plotly_chart(barras, use_container_width=True)
 
