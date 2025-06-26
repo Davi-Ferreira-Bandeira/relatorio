@@ -30,7 +30,7 @@ def load_data():
 df = load_data()
 
 month_order = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"]
-df_f["mes_label"] = pd.Categorical(df_f["mes_label"],categories=month_order, ordered=True)
+df["mes_label"] = pd.Categorical(df["mes_label"],categories=month_order, ordered=True)
 
 
 
