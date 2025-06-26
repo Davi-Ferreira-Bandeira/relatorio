@@ -24,6 +24,8 @@ def load_data():
     # Mes como int ordenável + label “Jan”, “Fev”…
     df["mes_num"]   = df["mes_aih"].astype(int)
     df["mes_label"] = pd.to_datetime(df["mes_num"], format="%m").dt.strftime("%b")
+    month_order = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"]
+    df_f["mes_label"] = pd.Categorical(df_f["mes_label"],categories=month_order, ordered=True)
 
     return df
 
