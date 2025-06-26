@@ -6,6 +6,7 @@ import pandas as pd
 import plotly.express as px
 from streamlit_folium import st_folium
 import folium
+from streamlit_plotly_events import plotly_events
 
 # ---------- CONFIGURAÇÃO GERAL ----------
 st.set_page_config(page_title="Internações SUS – Ride-DF",
@@ -72,17 +73,24 @@ def line_charts(df_f):
 def pizza_barras(df_f, medida="qtd_total"):
     # Pizza / Rosca
     pie = px.pie(df_f, names="uf_nome", values=medida,
-                 hole=.4, color="uf_nome",
-                 title="Distribuição das Internações por UF")
-    st.plotly_chart(pie, use_container_width=True)
+             hole=.4, color="uf_nome",
+             title="Distribuição das Internações por UF")
 
-    # Barras horizontal por município
-    barras = px.bar(df_f.groupby("nome_municipio", as_index=False)
-                        .agg(valor=(medida,"sum"))
-                        .sort_values("valor", ascending=False),
-                    x="valor", y="nome_municipio",
-                    orientation="h", title="Internações por Município")
-    st.plotly_chart(barras, use_container_width=True)
+selected = plotly_events(pie, click_event=True, select_event=False,
+                         use_container_width=True)
+
+if selected:                       # usuário clicou em uma fatia
+    uf_click = selected[0]["label"]
+    df_f = df_f[df_f["uf_nome"] == uf_click]
+
+# Barras por município (filtradas ou não)
+barras = px.bar(df_f.groupby("nome_municipio", as_index=False)
+                    .agg(valor=(medida, "sum"))
+                    .sort_values("valor", ascending=False),
+                x="valor", y="nome_municipio",
+                orientation="h",
+                title=f"Internações por Município {'('+uf_click+')' if selected else ''}")
+st.plotly_chart(barras, use_container_width=True)
 
 def mapa(df_f):
     m = folium.Map(location=[-15.8,-47.9], zoom_start=6, tiles="CartoDB positron")
