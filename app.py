@@ -90,7 +90,7 @@ def pizza_barras(df_f, medida="qtd_total"):
         pie,
         click_event=True,
         select_event=False,
-        use_container_width=True
+        override_width="100%"    
     )
 
     # ---------- Filtra DataFrame se houver clique ----------
