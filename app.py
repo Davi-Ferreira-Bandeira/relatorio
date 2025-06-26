@@ -10,7 +10,7 @@ import folium
 
 # ---------- CONFIGURAÇÃO GERAL ----------
 
-df = pd.read_csv("")
+df = pd.read_csv("sus_ride_df_aih_202506261935.csv")
 
 # ---------- COMPONENTES REUTILIZÁVEIS ----------
 def cards_overview(df_f):
