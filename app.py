@@ -93,11 +93,17 @@ def pizza_barras(df_f, medida="qtd_total"):
         override_width="100%"    
     )
 
-    # ---------- Filtra DataFrame se houver clique ----------
+    # ---------- Filtra se houve clique ----------
     if selected:
-        uf_click = selected[0]["label"]    # UF clicada
-        df_filtrado = df_f[df_f["uf_nome"] == uf_click]
-        titulo_barras = f"Internações por Município ({uf_click})"
+        point = selected[0]
+        uf_click = point.get("label") or point.get("customdata") \
+                   or point.get("x")   or point.get("y")
+        if uf_click:
+            df_filtrado = df_f[df_f["uf_nome"] == uf_click]
+            titulo_barras = f"Internações por Município ({uf_click})"
+        else:
+            df_filtrado = df_f
+            titulo_barras = "Internações por Município"
     else:
         df_filtrado = df_f
         titulo_barras = "Internações por Município"
