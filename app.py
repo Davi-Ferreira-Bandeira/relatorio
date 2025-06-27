@@ -6,7 +6,6 @@ import pandas as pd
 import plotly.express as px
 from streamlit_folium import st_folium
 import folium
-from streamlit_plotly_events import plotly_events
 
 # ---------- CONFIGURAÇÃO GERAL ----------
 st.set_page_config(page_title="Internações SUS – Ride-DF",
@@ -75,51 +74,26 @@ import plotly.express as px
 import streamlit as st
 
 def tree_uf_mun(df_f, medida="qtd_total"):
+    # --- Treemap ---
     fig = px.treemap(
         df_f,
-        path=["uf_nome", "nome_municipio"],   # hierarquia UF → Município
+        path=["uf_nome", "nome_municipio"],
         values=medida,
         color="uf_nome",
         color_discrete_sequence=px.colors.qualitative.Set3,
-        title="Internações por UF e Município – clique para detalhar"
+        title="Internações por UF → Município (clique para detalhar)"
     )
-    # opcional: começa mostrando só as UFs
     fig.data[0].textinfo = 'label+percent entry'
     st.plotly_chart(fig, use_container_width=True)
 
-    # ---------- Captura de clique ----------
-    selected = plotly_events(
-        pie,
-        click_event=True,
-        select_event=False,
-        override_width="100%",
-        key="pie-ufs"         # 👈 chave única e fixa!
-    )
-
-    # ---------- Filtra se houve clique ----------
-    if selected:
-        uf_click = (
-            selected[0].get("label")
-            or selected[0].get("customdata")
-            or selected[0].get("x")
-            or selected[0].get("y")
-        )
-        df_filtrado = df_f[df_f["uf_nome"] == uf_click]
-        titulo_barras = f"Internações por Município ({uf_click})"
-        st.write(selected)
-    else:
-        df_filtrado = df_f
-        titulo_barras = "Internações por Município"
-
-    # ---------- Barras horizontais ----------
+    # --- Barras horizontais (todos os municípios) ---
     barras = px.bar(
-        df_filtrado.groupby("nome_municipio", as_index=False)
-                   .agg(valor=(medida, "sum"))
-                   .sort_values("valor", ascending=False),
-        x="valor",
-        y="nome_municipio",
+        df_f.groupby("nome_municipio", as_index=False)
+            .agg(valor=(medida, "sum"))
+            .sort_values("valor", ascending=False),
+        x="valor", y="nome_municipio",
         orientation="h",
-        title=titulo_barras,
+        title="Internações por Município",
         color_discrete_sequence=["#005DAA"]
     )
     st.plotly_chart(barras, use_container_width=True)
@@ -150,7 +124,7 @@ def pagina1():
 
 def pagina2():
     st.subheader("Distribuição por UF e Municípios")
-    pizza_barras(df)
+    tree_uf_mun(df)         
 
 def pagina3():
     st.subheader("Mapa – Internações na Ride-DF")
