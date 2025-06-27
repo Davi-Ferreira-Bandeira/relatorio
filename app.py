@@ -74,18 +74,18 @@ from streamlit_plotly_events import plotly_events
 import plotly.express as px
 import streamlit as st
 
-def pizza_barras(df_f, medida="qtd_total"):
-    # ---------- Pizza / Rosca ----------
-    pie = px.pie(
+def tree_uf_mun(df_f, medida="qtd_total"):
+    fig = px.treemap(
         df_f,
-        names="uf_nome",
+        path=["uf_nome", "nome_municipio"],   # hierarquia UF → Município
         values=medida,
-        hole=.4,
-        title="Distribuição das Internações por UF",
-        color_discrete_sequence=px.colors.qualitative.Set3  # cores diferentes
+        color="uf_nome",
+        color_discrete_sequence=px.colors.qualitative.Set3,
+        title="Internações por UF e Município – clique para detalhar"
     )
-    # garante que a UF esteja disponível nos dados do ponto
-    pie.update_traces(customdata=df_f["uf_nome"])
+    # opcional: começa mostrando só as UFs
+    fig.data[0].textinfo = 'label+percent entry'
+    st.plotly_chart(fig, use_container_width=True)
 
     # ---------- Captura de clique ----------
     selected = plotly_events(
