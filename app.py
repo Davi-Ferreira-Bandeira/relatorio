@@ -100,7 +100,7 @@ def sunburst_uf_mun(df_f, medida="qtd_total"):
 
 def escala(qtd):
     # exemplo: área proporcional → raio ∝ √qtd
-    return max(qtd**0.5 / 4, 3)     # nunca menor que 3 px
+    return max(qtd**0.33 / 4, 3)     # nunca menor que 3 px
 
 def mapa(df_f):
     m = folium.Map(location=[-15.8, -47.9],
