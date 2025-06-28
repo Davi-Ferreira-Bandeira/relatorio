@@ -106,7 +106,7 @@ def sunburst_uf_mun(df_f, medida="qtd_total"):
 def scatter_uf_mun(df_f, medida="qtd_total"):
     # --- Scatter ---
     fig = px.scatter(
-        base,
+        df_f,
         x="uf_nome",
         y="valor",
         size="valor",
