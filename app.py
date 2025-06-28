@@ -103,23 +103,6 @@ def sunburst_uf_mun(df_f, medida="qtd_total"):
     fig.data[0].textinfo = 'label+percent entry'
     st.plotly_chart(fig, use_container_width=False)
 
-def scatter_uf_mun(df_f, medida="qtd_total"):
-    # --- Scatter ---
-    fig = px.scatter(
-        df_f,
-        x="uf_nome",
-        y="valor",
-        size="valor",
-        color="uf_nome",
-        size_max=80,
-        title="Clique na bolha da UF",
-        color_discrete_sequence=px.colors.qualitative.Set3,
-        width=1500,
-        height=850
-    )
-    fig.data[0].textinfo = 'label+percent entry'
-    st.plotly_chart(fig, use_container_width=False)
-
 def stacked_bar_uf_mun(df_f, medida="qtd_total"):
     # --- Stacked Bar ---
     fig = px.bar(
