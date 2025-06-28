@@ -86,18 +86,6 @@ def tree_uf_mun(df_f, medida="qtd_total"):
     fig.data[0].textinfo = 'label+percent entry'
     st.plotly_chart(fig, use_container_width=True)
 
-    # --- Barras horizontais (todos os municípios) ---
-    barras = px.bar(
-        df_f.groupby("nome_municipio", as_index=False)
-            .agg(valor=(medida, "sum"))
-            .sort_values("valor", ascending=False),
-        x="valor", y="nome_municipio",
-        orientation="h",
-        title="Internações por Município",
-        color_discrete_sequence=["#005DAA"]
-    )
-    st.plotly_chart(barras, use_container_width=True)
-
 def mapa(df_f):
     m = folium.Map(location=[-15.8,-47.9], zoom_start=6, tiles="CartoDB positron")
     for _,row in df_f.iterrows():
