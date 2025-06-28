@@ -142,7 +142,6 @@ def pagina2():
     st.subheader("Distribuição por UF e Municípios")
     tree_uf_mun(df)        
     sunburst_uf_mun(df)
-    scatter_uf_mun(df)
     stacked_bar_uf_mun(df)
 
 def pagina3():
