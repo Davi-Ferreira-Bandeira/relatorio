@@ -98,17 +98,29 @@ def sunburst_uf_mun(df_f, medida="qtd_total"):
     fig.update_layout(height=2500)
     st.plotly_chart(fig, use_container_width=False)
 
+def escala(qtd):
+    # exemplo: área proporcional → raio ∝ √qtd
+    return max(qtd**0.5 / 4, 3)     # nunca menor que 3 px
+
 def mapa(df_f):
-    m = folium.Map(location=[-15.8,-47.9], zoom_start=6, tiles="CartoDB positron")
-    for _,row in df_f.iterrows():
+    m = folium.Map(location=[-15.8, -47.9],
+                   zoom_start=6,
+                   tiles="OpenStreetMap")          # OSM é público e leve
+
+    for _, row in df_f.iterrows():
         folium.CircleMarker(
             location=[row["latitude"], row["longitude"]],
-            radius = max(row["qtd_total"]/200, 1),  # escala simples
-            tooltip=f"{row['nome_municipio']}: {row['qtd_total']} int.",
-            color  ="#005DAA" if row["uf_sigla"]=="DF" else "#007F5C" if row["uf_sigla"]=="GO" else "#FF8C00",
-            fill=True, fill_opacity=0.7
+            radius=escala(row["qtd_total"]),
+            tooltip=f"{row['nome_municipio']}: {row['qtd_total']} internas.",
+            color   = "#005DAA" if row["uf_sigla"]=="DF"
+                      else "#007F5C" if row["uf_sigla"]=="GO"
+                      else "#FF8C00",
+            fill=True,
+            fill_opacity=0.65
         ).add_to(m)
-    st_folium(m, width=1100, height=600)
+
+    st_folium(m, width=1000, height=550)
+
 
 # ---------- PÁGINAS ----------
 def pagina1():
