@@ -69,20 +69,20 @@ def line_charts(df_f):
     )
     st.plotly_chart(fig_val, use_container_width=True)
   
-def tree_uf_mun(df_f, medida="qtd_total"):
-    # --- Treemap ---
-    fig = px.treemap(
-        df_f,
-        path=["uf_nome", "nome_municipio"],
-        values=medida,
-        color="uf_nome",
-        color_discrete_sequence=px.colors.qualitative.Set3,
-        title="Internações por UF → Município (clique para detalhar)",
-        width=1500,
-        height=850
-    )
-    fig.data[0].textinfo = 'label+percent entry'
-    st.plotly_chart(fig, use_container_width=False)
+# def tree_uf_mun(df_f, medida="qtd_total"):
+#     # --- Treemap ---
+#     fig = px.treemap(
+#         df_f,
+#         path=["uf_nome", "nome_municipio"],
+#         values=medida,
+#         color="uf_nome",
+#         color_discrete_sequence=px.colors.qualitative.Set3,
+#         title="Internações por UF → Município (clique para detalhar)",
+#         width=1500,
+#         height=850
+#     )
+#     fig.data[0].textinfo = 'label+percent entry'
+#     st.plotly_chart(fig, use_container_width=False)
 
 def sunburst_uf_mun(df_f, medida="qtd_total"):
     # --- Sunburst ---
@@ -97,56 +97,6 @@ def sunburst_uf_mun(df_f, medida="qtd_total"):
     fig.data[0].textinfo = 'label+percent entry'   
     fig.update_layout(height=2500)
     st.plotly_chart(fig, use_container_width=False)
-
-def bar_drill(df_f, medida="qtd_total"):
-    nivel = st.session_state.get("nivel_bar", "uf")
-    uf_sel = st.session_state.get("uf_sel", None)
-
-    # -------- NÍVEL 1 : BARRAS POR UF --------
-    if nivel == "uf":
-        base = (df_f.groupby("uf_nome", as_index=False)
-                      .agg(valor=(medida, "sum")))
-
-        fig = px.bar(
-            base, x="uf_nome", y="valor",
-            color="uf_nome",
-            color_discrete_sequence=px.colors.qualitative.Set3,
-            title="Internações por UF – clique na barra",
-            width=880, height=450
-        )
-
-        sel = plotly_events(fig, click_event=True, key="bars-uf")
-        st.plotly_chart(fig, use_container_width=False)
-
-        if sel:                         # usuário clicou em uma coluna
-            st.session_state["nivel_bar"] = "mun"
-            st.session_state["uf_sel"] = sel[0]["x"]   # UF clicada
-            st.experimental_rerun()
-
-    # -------- NÍVEL 2 : BARRAS POR MUNICÍPIO --------
-    else:
-        uf_sel = uf_sel or "UF?"
-        df_mun = df_f[df_f["uf_nome"] == uf_sel]
-
-        base = (df_mun.groupby("nome_municipio", as_index=False)
-                         .agg(valor=(medida, "sum"))
-                         .sort_values("valor", ascending=False))
-
-        fig = px.bar(
-            base, x="valor", y="nome_municipio",
-            orientation="h",
-            color_discrete_sequence=["#005DAA"],
-            title=f"Internações por Município – {uf_sel}",
-            width=880, height=450
-        )
-
-        st.plotly_chart(fig, use_container_width=False)
-
-        if st.button("◀️ Voltar às UFs"):
-            st.session_state["nivel_bar"] = "uf"
-            st.session_state["uf_sel"] = None
-            st.experimental_rerun()
-
 
 def mapa(df_f):
     m = folium.Map(location=[-15.8,-47.9], zoom_start=6, tiles="CartoDB positron")
@@ -176,7 +126,6 @@ def pagina2():
     st.subheader("Distribuição por UF e Municípios")
     tree_uf_mun(df)        
     sunburst_uf_mun(df)
-    bar_drill(df)
 
 def pagina3():
     st.subheader("Mapa – Internações na Ride-DF")
