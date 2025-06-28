@@ -82,7 +82,7 @@ def tree_uf_mun(df_f, medida="qtd_total"):
         color="uf_nome",
         color_discrete_sequence=px.colors.qualitative.Set3,
         title="Internações por UF → Município (clique para detalhar)",
-        width=1000px
+        width=1000
     )
     fig.data[0].textinfo = 'label+percent entry'
     st.plotly_chart(fig, use_container_width=True)
