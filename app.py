@@ -106,12 +106,14 @@ def sunburst_uf_mun(df_f, medida="qtd_total"):
 def scatter_uf_mun(df_f, medida="qtd_total"):
     # --- Scatter ---
     fig = px.scatter(
-        df_f,
-        path=["uf_nome", "nome_municipio"],
-        values=medida,
+        base,
+        x="uf_nome",
+        y="valor",
+        size="valor",
         color="uf_nome",
+        size_max=80,
+        title="Clique na bolha da UF",
         color_discrete_sequence=px.colors.qualitative.Set3,
-        title="Internações por UF → Município (clique para detalhar)",
         width=1500,
         height=850
     )
