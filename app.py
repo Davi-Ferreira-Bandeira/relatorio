@@ -124,7 +124,7 @@ def pagina1():
 
 def pagina2():
     st.subheader("Distribuição por UF e Municípios")
-    tree_uf_mun(df)        
+    # tree_uf_mun(df)        
     sunburst_uf_mun(df)
 
 def pagina3():
