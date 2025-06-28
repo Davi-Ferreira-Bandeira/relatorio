@@ -85,7 +85,7 @@ def tree_uf_mun(df_f, medida="qtd_total"):
         width=1000
     )
     fig.data[0].textinfo = 'label+percent entry'
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=False)
 
 def mapa(df_f):
     m = folium.Map(location=[-15.8,-47.9], zoom_start=6, tiles="CartoDB positron")
