@@ -88,6 +88,47 @@ def tree_uf_mun(df_f, medida="qtd_total"):
     fig.data[0].textinfo = 'label+percent entry'
     st.plotly_chart(fig, use_container_width=False)
 
+def sunburst_uf_mun(df_f, medida="qtd_total"):
+    # --- Sunburst ---
+    fig = px.sunburst(
+        df_f,
+        path=["uf_nome", "nome_municipio"],
+        values=medida,
+        color="uf_nome",
+        color_discrete_sequence=px.colors.qualitative.Set3,
+        title="Internações por UF → Município (clique para detalhar)",
+        width=1500,
+        height=850
+    )
+    fig.data[0].textinfo = 'label+percent entry'
+    st.plotly_chart(fig, use_container_width=False)
+
+def scatter_uf_mun(df_f, medida="qtd_total"):
+    # --- Scatter ---
+    fig = px.scatter(
+        df_f,
+        path=["uf_nome", "nome_municipio"],
+        values=medida,
+        color="uf_nome",
+        color_discrete_sequence=px.colors.qualitative.Set3,
+        title="Internações por UF → Município (clique para detalhar)",
+        width=1500,
+        height=850
+    )
+    fig.data[0].textinfo = 'label+percent entry'
+    st.plotly_chart(fig, use_container_width=False)
+
+def stacked_bar_uf_mun(df_f, medida="qtd_total"):
+    # --- Stacked Bar ---
+    fig = px.bar(
+        df_f.groupby(["uf_nome", "nome_municipio"], as_index=False)
+            .agg(valor=("qtd_total", "sum")),
+        x="uf_nome", y="valor", color="nome_municipio",
+        title="Internações – UF (empilhado 100 %)",
+    )
+    fig.update_layout(barmode="stack", yaxis_tickformat="%")
+
+
 def mapa(df_f):
     m = folium.Map(location=[-15.8,-47.9], zoom_start=6, tiles="CartoDB positron")
     for _,row in df_f.iterrows():
@@ -114,7 +155,10 @@ def pagina1():
 
 def pagina2():
     st.subheader("Distribuição por UF e Municípios")
-    tree_uf_mun(df)         
+    tree_uf_mun(df)        
+    sunburst_uf_mun(df)
+    scatter_uf_mun(df)
+    stacked_bar_uf_mun(df)
 
 def pagina3():
     st.subheader("Mapa – Internações na Ride-DF")
