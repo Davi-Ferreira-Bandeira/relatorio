@@ -92,12 +92,11 @@ def sunburst_uf_mun(df_f, medida="qtd_total"):
         values=medida,
         color="uf_nome",
         color_discrete_sequence=px.colors.qualitative.Set3,
-        title="Internações por UF → Município (clique para detalhar)",
-        width=15000,
-        height=15000
+        title="Internações por UF → Município (clique para detalhar)"
     )
     fig.data[0].textinfo = 'label+percent entry'
-    st.plotly_chart(fig, use_container_width=False)
+    fig.update_layout(height=1500)    
+    st.plotly_chart(fig, use_container_width=True)
 
 def bar_drill(df_f, medida="qtd_total"):
     nivel = st.session_state.get("nivel_bar", "uf")
