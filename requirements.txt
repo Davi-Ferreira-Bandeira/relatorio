@@ -5,4 +5,3 @@ psycopg2-binary
 plotly
 folium
 streamlit-folium
-streamlit-plotly-events
