@@ -95,7 +95,7 @@ def sunburst_uf_mun(df_f, medida="qtd_total"):
         title="Internações por UF → Município (clique para detalhar)"
     )
     fig.data[0].textinfo = 'label+percent entry'   
-    fig.update_layout(height=2500)
+    fig.update_layout(width=1500)
     st.plotly_chart(fig, use_container_width=False)
 
 def escala(qtd):
